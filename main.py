@@ -1,8 +1,6 @@
+import json
 from read_files import get_speeches, write_list_to_csv
 from utils import get_sanitized_wordlist
-
-
-#  count_dict = {}
 
 
 class ChristmasCounter(object):
@@ -58,6 +56,18 @@ class ChristmasCounter(object):
         sorted_freq = self.sorted_year_freq(year)
         write_list_to_csv(sorted_freq, 'frequency_%s.csv' % year)
 
+    def global_freq_to_json(self):
+        data = {'data': self.global_freq}
+        with open('frequency.json', 'w', encoding='utf-8') as outfile:
+            json.dump(data, outfile, ensure_ascii=False)
+
+    def year_freq_to_json(self, year):
+        year = str(year)
+        year_file = '%s.json' % year
+        data = self.freq_per_year[year]
+        with open(year_file, 'w', encoding='utf-8') as outfile:
+            json.dump(data, outfile, ensure_ascii=False)
+
 
 
 if __name__ == '__main__':
@@ -65,8 +75,12 @@ if __name__ == '__main__':
     speeches_dict = get_speeches()
     counter = ChristmasCounter(speeches_dict)
     counter.count_all_years()
-    counter.global_freq_to_csv()
-    counter.year_freq_to_csv(1949)
-    counter.year_freq_to_csv(1962)
-    counter.year_freq_to_csv(1989)
-    counter.year_freq_to_csv(2017)
+
+    counter.global_freq_to_json()
+    #  counter.year_freq_to_json(1999)
+    #  counter.year_freq_to_json(2000)
+    #  counter.global_freq_to_csv()
+    #  counter.year_freq_to_csv(1949)
+    #  counter.year_freq_to_csv(1962)
+    #  counter.year_freq_to_csv(1989)
+    #  counter.year_freq_to_csv(2017)
