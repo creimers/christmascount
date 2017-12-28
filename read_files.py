@@ -17,9 +17,15 @@ def get_speeches():
             	.replace(',', '')\
             	.replace('.', '')\
             	.replace('"', '')\
+            	.replace('„', '')\
+            	.replace('»', '')\
             	.replace("'", '')\
             	.replace(";", '')\
+            	.replace("–", '')\
             	.replace("-", '')\
+            	.replace("?", '')\
+            	.replace("!", '')\
+            	.replace("@", '')\
             	.replace(":", '')
 
             speeches_dict[speech] = data

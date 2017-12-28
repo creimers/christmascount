@@ -1,48 +1,72 @@
-import pprint
-
 from read_files import get_speeches, write_list_to_csv
-
-speeches_dict = get_speeches()
-
-count_dict = {}
-
-test_string = "friede sei Gott in der Höhe"
-
-test_string_2 = "friede sei Gott in der Höhe und auf Erden"
-
-test_string_list = [test_string, test_string_2]
-
-def count_words_in_string(string):
-	wordlist = string.split(' ')
-
-	for word in wordlist:
-		word = word.lower()
-		if word in count_dict.keys():
-			count_dict[word] += 1
-		else:
-			count_dict[word] = 1
-
-def list_iterate(list):
-	for item in list:
-		count_words_in_string(item)
-
-def count_all():
-	for year in speeches_dict.keys():
-		count_words_in_string(speeches_dict[year])
+from utils import get_sanitized_wordlist
 
 
-#list_iterate(test_string_list)
-count_all()
+#  count_dict = {}
 
-#print(count_dict)
 
-def sortFreqDict(freqdict):
-    aux = [(freqdict[key], key) for key in freqdict]
-    aux.sort()
-    aux.reverse()
-    return aux
+class ChristmasCounter(object):
 
-#pprint.pprint(sortFreqDict(count_dict))
-sorted_results = sortFreqDict(count_dict)
+    def __init__(self, speeches_dict):
+        self.speeches_dict = speeches_dict
+        self.freq_per_year = {}
+        self.global_freq = {}
 
-write_list_to_csv(sorted_results, 'frequency.csv')
+    def count_words_in_speech(self, year, speech_string):
+        sanitized_wordlist = get_sanitized_wordlist(speech_string)
+
+        for word in sanitized_wordlist:
+
+            if word in self.global_freq.keys():
+                self.global_freq[word] += 1
+            else:
+                self.global_freq[word] = 1
+
+            year = str(year)
+            if year not in self.freq_per_year.keys():
+                self.freq_per_year[year] = {}
+
+            if word in self.freq_per_year[year].keys():
+                self.freq_per_year[year][word] += 1
+            else:
+                self.freq_per_year[year][word] = 1
+
+    def count_all_years(self):
+        for year_file in self.speeches_dict.keys():
+            year = year_file.split('.')[0]
+            self.count_words_in_speech(year, speeches_dict[year_file])
+
+    def sort_freq_dict(self, freqdict):
+        aux = [(freqdict[key], key) for key in freqdict]
+        aux.sort()
+        aux.reverse()
+        return aux
+
+    def sorted_global_freq(self):
+        return self.sort_freq_dict(self.global_freq)
+
+    def sorted_year_freq(self, year):
+        year = str(year)
+        return self.sort_freq_dict(self.freq_per_year[year])
+
+    def global_freq_to_csv(self):
+        sorted_freq = self.sorted_global_freq()
+        write_list_to_csv(sorted_freq, 'frequency.csv')
+
+    def year_freq_to_csv(self, year):
+        year = str(year)
+        sorted_freq = self.sorted_year_freq(year)
+        write_list_to_csv(sorted_freq, 'frequency_%s.csv' % year)
+
+
+
+if __name__ == '__main__':
+
+    speeches_dict = get_speeches()
+    counter = ChristmasCounter(speeches_dict)
+    counter.count_all_years()
+    counter.global_freq_to_csv()
+    counter.year_freq_to_csv(1949)
+    counter.year_freq_to_csv(1962)
+    counter.year_freq_to_csv(1989)
+    counter.year_freq_to_csv(2017)
