@@ -35,5 +35,6 @@ services:
 
     volumes:
       - ./server:/project/
+      - /project/node_modules
 
     command: node index.js
