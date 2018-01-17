@@ -1,0 +1,11 @@
+version: '2'
+
+volumes:
+  mongo_data: {}
+
+services:
+  mongo:
+    restart: always
+
+  server:
+    restart: always
