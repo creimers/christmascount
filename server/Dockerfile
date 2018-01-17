@@ -5,5 +5,3 @@ WORKDIR /project
 
 RUN npm install
 RUN npm install --global nodemon
-
-CMD ['node', 'index.js']
