@@ -1,0 +1,37 @@
+version: '2'
+
+volumes:
+  mongo_data: {}
+
+services:
+  python:
+    working_dir: /project
+
+    build:
+      context: ./data
+
+    links:
+      - mongo
+
+    volumes:
+      - ./data:/project/
+
+  mongo:
+    image: mongo:latest
+
+    volumes:
+        - mongo_data:/data/db
+
+  server:
+
+    build:
+      context: ./server
+
+    links:
+      - mongo
+
+    ports:
+      - "4000:4000"
+
+    volumes:
+      - ./server:/project/

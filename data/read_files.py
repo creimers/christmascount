@@ -2,10 +2,19 @@ import os
 import csv
 
 file_dir = os.path.dirname(os.path.abspath(__file__))
-speeches_dir = os.path.join(file_dir, 'speeches')
 
 
-def get_speeches():
+def get_speeches(target_speeches):
+    """
+    Args:
+        target_speeches (string): name of speeches dir
+    Returns:
+        speeches_dir (dict)
+    """
+    speeches_dir = os.path.join(file_dir, 'speeches', target_speeches)
+    if not os.path.isdir(speeches_dir):
+        raise IOError('speech dir %s does not exist' % target_speeches)
+
     speeches_dict = {}
 
     for speech in os.listdir(speeches_dir):

@@ -1,0 +1,26 @@
+version: '2'
+
+volumes:
+  mongo_data: {}
+
+services:
+  python:
+    working_dir: /project
+
+    build:
+      context: .
+
+    links:
+      - mongo
+
+    volumes:
+      - ./:/project/
+
+  mongo:
+    image: mongo:latest
+
+    volumes:
+        - mongo_data:/data/db
+
+  express:
+    image: node:9
